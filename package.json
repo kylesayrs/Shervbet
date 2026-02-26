@@ -1,0 +1,9 @@
+{
+  "name": "shervbet",
+  "version": "1.0.0",
+  "description": "Closed community prediction market using points.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shervbet</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <section class="login" id="loginView">
+        <div class="login-card">
+          <p class="eyebrow">Shervbet</p>
+          <h1>Prediction Market</h1>
+          <p class="subtext">Private points-only market for your crew.</p>
+          <form id="loginForm">
+            <label>
+              Username
+              <input type="text" name="username" required autocomplete="username" />
+            </label>
+            <label>
+              Password
+              <input type="password" name="password" required autocomplete="current-password" />
+            </label>
+            <button type="submit">Log in</button>
+            <p class="error" id="loginError"></p>
+          </form>
+          <div class="login-hint">
+            <span>Default admin:</span>
+            <span>admin / admin</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell hidden" id="appView">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Shervbet</p>
+            <h2 id="welcomeName">Welcome</h2>
+          </div>
+          <button class="ghost" id="logoutBtn">Log out</button>
+        </header>
+
+        <main class="content" id="content">
+          <section class="tab" id="eventsTab">
+            <div class="tab-header">
+              <div>
+                <h3>Events</h3>
+                <p>Bet once. Prices rise as the crowd piles in.</p>
+              </div>
+              <button id="addEventBtn">+ New event</button>
+            </div>
+            <div class="event-strip" id="eventsStrip"></div>
+          </section>
+
+          <section class="tab hidden" id="profileTab">
+            <div class="tab-header">
+              <div>
+                <h3>Profile</h3>
+                <p>Points balance and access controls.</p>
+              </div>
+            </div>
+            <div class="profile-grid">
+              <div class="card">
+                <h4>Your points</h4>
+                <p class="points" id="pointsBalance">0</p>
+              </div>
+              <div class="card">
+                <h4>Change password</h4>
+                <form id="passwordForm" class="stack">
+                  <label>
+                    Current password
+                    <input type="password" name="current" required />
+                  </label>
+                  <label>
+                    New password
+                    <input type="password" name="next" required />
+                  </label>
+                  <button type="submit">Update password</button>
+                  <p class="error" id="passwordError"></p>
+                </form>
+              </div>
+              <div class="card hidden" id="adminPanel">
+                <h4>Admin: add or reset user</h4>
+                <form id="adminUserForm" class="stack">
+                  <label>
+                    Username
+                    <input type="text" name="username" required />
+                  </label>
+                  <label>
+                    Temporary password
+                    <input type="text" name="password" required />
+                  </label>
+                  <label class="inline">
+                    <input type="checkbox" name="is_admin" />
+                    Admin access
+                  </label>
+                  <button type="submit">Save user</button>
+                  <p class="error" id="adminUserError"></p>
+                </form>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <button class="tab-btn active" data-tab="eventsTab">Events</button>
+          <button class="tab-btn" data-tab="profileTab">Profile</button>
+        </nav>
+      </section>
+    </div>
+
+    <div class="modal hidden" id="eventModal">
+      <div class="modal-card">
+        <h4>Post a new event</h4>
+        <form id="eventForm" class="stack">
+          <label>
+            Event description
+            <textarea name="description" rows="3" required></textarea>
+          </label>
+          <label>
+            Initial YES price (1-99)
+            <input type="number" name="price" min="1" max="99" required />
+          </label>
+          <button type="submit">Create event</button>
+          <button type="button" class="ghost" id="cancelEventBtn">Cancel</button>
+          <p class="error" id="eventError"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
