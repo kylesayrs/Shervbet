@@ -9,6 +9,7 @@ const eventModal = document.getElementById("eventModal");
 const eventForm = document.getElementById("eventForm");
 const cancelEventBtn = document.getElementById("cancelEventBtn");
 const eventError = document.getElementById("eventError");
+const priceValue = document.getElementById("priceValue");
 const pointsBalance = document.getElementById("pointsBalance");
 const passwordForm = document.getElementById("passwordForm");
 const passwordError = document.getElementById("passwordError");
@@ -22,6 +23,30 @@ let currentUser = null;
 let eventsCache = [];
 let userBets = [];
 let refreshTimer = null;
+let lastResolvedWins = new Set();
+let confettiCanvas = null;
+let confettiActive = false;
+let hasRenderedEvents = false;
+const SEEN_WINS_KEY = "seenWins";
+const SEEN_INIT_KEY = "seenWinsInitialized";
+
+const loadSeenWins = () => {
+  try {
+    const raw = localStorage.getItem(SEEN_WINS_KEY);
+    if (!raw) return new Set();
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed);
+  } catch (err) {
+    return new Set();
+  }
+};
+
+const saveSeenWins = (set) => {
+  localStorage.setItem(SEEN_WINS_KEY, JSON.stringify([...set]));
+};
+
+lastResolvedWins = loadSeenWins();
 
 const apiFetch = async (path, options = {}) => {
   const headers = {
@@ -73,7 +98,11 @@ const loadMe = async () => {
 
 const refreshEvents = async () => {
   const data = await apiFetch("/api/events");
-  eventsCache = data.events || [];
+  eventsCache = (data.events || []).sort((a, b) => {
+    const aTime = Date.parse(a.created_at || 0);
+    const bTime = Date.parse(b.created_at || 0);
+    return bTime - aTime;
+  });
   userBets = data.userBets || [];
   renderEvents();
   const me = await apiFetch("/api/me");
@@ -91,9 +120,14 @@ const renderEvents = () => {
     return;
   }
 
+  const winsThisRender = new Set();
+
   eventsCache.forEach((event) => {
     const card = document.createElement("div");
     card.className = "event-card";
+    if (!hasRenderedEvents) {
+      card.classList.add("animate");
+    }
     const userBet = userBets.find((bet) => bet.event_id === event.id);
     const statusBadge = event.status === "resolved"
       ? `Resolved: ${event.outcome.toUpperCase()}`
@@ -134,7 +168,7 @@ const renderEvents = () => {
       yesBtn.addEventListener("click", () => placeBet(event.id, "yes"));
       const noBtn = document.createElement("button");
       noBtn.textContent = `Bet NO (${event.prices.no})`;
-      noBtn.classList.add("ghost");
+      noBtn.classList.add("btn-no");
       noBtn.addEventListener("click", () => placeBet(event.id, "no"));
       actions.appendChild(yesBtn);
       actions.appendChild(noBtn);
@@ -144,6 +178,10 @@ const renderEvents = () => {
       const badge = document.createElement("span");
       badge.className = "badge";
       badge.textContent = `You bet ${userBet.direction.toUpperCase()} (${userBet.price} pts)`;
+      if (event.status === "resolved" && event.outcome === userBet.direction) {
+        badge.classList.add("win");
+        winsThisRender.add(event.id);
+      }
       actions.appendChild(badge);
     }
 
@@ -176,6 +214,81 @@ const renderEvents = () => {
 
     eventsStrip.appendChild(card);
   });
+
+  hasRenderedEvents = true;
+  triggerConfettiForWins(winsThisRender);
+};
+
+const triggerConfettiForWins = (wins) => {
+  const initialized = localStorage.getItem(SEEN_INIT_KEY) === "true";
+  if (!initialized) {
+    wins.forEach((id) => lastResolvedWins.add(id));
+    saveSeenWins(lastResolvedWins);
+    localStorage.setItem(SEEN_INIT_KEY, "true");
+    return;
+  }
+  const newWins = [...wins].filter((id) => !lastResolvedWins.has(id));
+  if (!newWins.length) return;
+  newWins.forEach((id) => lastResolvedWins.add(id));
+  saveSeenWins(lastResolvedWins);
+  fireConfetti();
+};
+
+const setupConfetti = () => {
+  if (confettiCanvas) return;
+  confettiCanvas = document.createElement("canvas");
+  confettiCanvas.className = "confetti";
+  document.body.appendChild(confettiCanvas);
+  resizeConfetti();
+  window.addEventListener("resize", resizeConfetti);
+};
+
+const resizeConfetti = () => {
+  if (!confettiCanvas) return;
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+};
+
+const fireConfetti = () => {
+  if (confettiActive) return;
+  setupConfetti();
+  const ctx = confettiCanvas.getContext("2d");
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * confettiCanvas.width,
+    y: -20 - Math.random() * confettiCanvas.height * 0.3,
+    size: 6 + Math.random() * 6,
+    speed: 2 + Math.random() * 4,
+    drift: -1 + Math.random() * 2,
+    color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+    rotation: Math.random() * Math.PI,
+    rotationSpeed: -0.1 + Math.random() * 0.2,
+  }));
+  const start = performance.now();
+  confettiActive = true;
+
+  const draw = (time) => {
+    const elapsed = time - start;
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    pieces.forEach((piece) => {
+      piece.x += piece.drift;
+      piece.y += piece.speed;
+      piece.rotation += piece.rotationSpeed;
+      ctx.save();
+      ctx.translate(piece.x, piece.y);
+      ctx.rotate(piece.rotation);
+      ctx.fillStyle = piece.color;
+      ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 0.6);
+      ctx.restore();
+    });
+    if (elapsed < 2500) {
+      requestAnimationFrame(draw);
+    } else {
+      confettiActive = false;
+      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+  };
+
+  requestAnimationFrame(draw);
 };
 
 const placeBet = async (eventId, direction) => {
@@ -250,6 +363,10 @@ logoutBtn.addEventListener("click", async () => {
 
 addEventBtn.addEventListener("click", () => {
   eventModal.classList.remove("hidden");
+  const range = eventForm.querySelector('input[name="price"]');
+  if (range && priceValue) {
+    priceValue.textContent = `${range.value} pts`;
+  }
 });
 
 cancelEventBtn.addEventListener("click", () => {
@@ -275,6 +392,12 @@ eventForm.addEventListener("submit", async (event) => {
     await refreshEvents();
   } catch (err) {
     setError(eventError, err.message);
+  }
+});
+
+eventForm.addEventListener("input", (event) => {
+  if (event.target && event.target.name === "price" && priceValue) {
+    priceValue.textContent = `${event.target.value} pts`;
   }
 });
 

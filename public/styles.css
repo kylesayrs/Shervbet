@@ -91,6 +91,47 @@ textarea {
   font-family: inherit;
 }
 
+input[type="range"] {
+  padding: 0;
+  border-radius: 999px;
+  height: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--sunset));
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-dark);
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-dark);
+  border: 2px solid white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.range-value {
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+}
+
 textarea {
   resize: vertical;
 }
@@ -117,6 +158,15 @@ button.ghost {
   color: var(--ink);
   box-shadow: none;
   border: 1px solid var(--border);
+}
+
+.btn-no {
+  background: #e86a9b;
+  box-shadow: 0 12px 24px rgba(232, 106, 155, 0.25);
+}
+
+.btn-no:hover {
+  transform: translateY(-1px);
 }
 
 form {
@@ -194,6 +244,13 @@ form {
   flex-direction: column;
   gap: 16px;
   min-height: 320px;
+  opacity: 1;
+}
+
+.event-card.animate {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.6s ease forwards;
 }
 
 .event-meta {
@@ -217,10 +274,16 @@ form {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .price-card.no {
   background: #f3c6e0;
+}
+
+.price-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
 }
 
 .bets {
@@ -237,6 +300,11 @@ form {
   background: #f0f0f0;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.badge.win {
+  background: #c7f2d8;
+  color: #0f5132;
 }
 
 .stack {
@@ -279,6 +347,7 @@ form {
   background: linear-gradient(0deg, rgba(245, 241, 233, 0.95), rgba(245, 241, 233, 0.6));
   border-top: 1px solid var(--border);
   backdrop-filter: blur(8px);
+  animation: fadeIn 0.8s ease;
 }
 
 .tab-btn {
@@ -305,6 +374,7 @@ form {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  animation: fadeIn 0.3s ease;
 }
 
 .modal-card {
@@ -313,6 +383,7 @@ form {
   padding: 24px;
   width: min(480px, 100%);
   box-shadow: var(--shadow);
+  animation: rise 0.3s ease;
 }
 
 @keyframes rise {
@@ -326,6 +397,46 @@ form {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pulse {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
 @media (min-width: 900px) {
   .content {
     padding: 32px 48px 100px;
