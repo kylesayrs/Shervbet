@@ -331,6 +331,17 @@ function handleApi(req, res) {
     return;
   }
 
+  if (req.method === "GET" && pathname === "/api/leaderboard") {
+    const user = requireAuth(req, res);
+    if (!user) return;
+    const users = readCsv(path.join(DATA_DIR, "users.csv"));
+    const leaderboard = users
+      .map((u) => ({ username: u.username, points: Number(u.points) }))
+      .sort((a, b) => b.points - a.points || a.username.localeCompare(b.username));
+    jsonResponse(res, 200, { leaderboard });
+    return;
+  }
+
   if (req.method === "GET" && pathname === "/api/events") {
     const user = requireAuth(req, res);
     if (!user) return;

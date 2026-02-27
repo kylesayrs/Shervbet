@@ -109,10 +109,28 @@
               </div>
             </div>
           </section>
+
+          <section class="tab hidden" id="leaderboardTab">
+            <div class="tab-header">
+              <div>
+                <h3>Leaderboard</h3>
+                <p>Point totals across the league.</p>
+              </div>
+            </div>
+            <div class="leaderboard">
+              <div class="leaderboard-head">
+                <span>Rank</span>
+                <span>Member</span>
+                <span>Points</span>
+              </div>
+              <div class="leaderboard-list" id="leaderboardList"></div>
+            </div>
+          </section>
         </main>
 
         <nav class="bottom-nav">
           <button class="tab-btn active" data-tab="eventsTab">Events</button>
+          <button class="tab-btn" data-tab="leaderboardTab">Leaderboard</button>
           <button class="tab-btn" data-tab="profileTab">Profile</button>
         </nav>
       </section>

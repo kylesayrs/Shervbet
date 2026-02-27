@@ -16,11 +16,14 @@ const passwordError = document.getElementById("passwordError");
 const adminPanel = document.getElementById("adminPanel");
 const adminUserForm = document.getElementById("adminUserForm");
 const adminUserError = document.getElementById("adminUserError");
+const leaderboardList = document.getElementById("leaderboardList");
+const leaderboardTab = document.getElementById("leaderboardTab");
 
 let authToken = localStorage.getItem("token");
 let currentUser = null;
 let eventsCache = [];
 let userBets = [];
+let leaderboardCache = [];
 let refreshTimer = null;
 let lastResolvedWins = new Set();
 let confettiCanvas = null;
@@ -84,6 +87,7 @@ const loadMe = async () => {
     adminPanel.classList.toggle("hidden", !currentUser.is_admin);
     showApp();
     await refreshEvents();
+    await refreshLeaderboardIfVisible();
     if (!refreshTimer) {
       refreshTimer = setInterval(refreshEvents, 8000);
     }
@@ -106,6 +110,7 @@ const refreshEvents = async () => {
   const me = await apiFetch("/api/me");
   currentUser = me;
   pointsBalance.textContent = me.points;
+  await refreshLeaderboardIfVisible();
 };
 
 const renderEvents = () => {
@@ -215,6 +220,53 @@ const renderEvents = () => {
 
   hasRenderedEvents = true;
   triggerConfettiForWins(winsThisRender);
+};
+
+const refreshLeaderboardIfVisible = async () => {
+  if (!leaderboardTab || leaderboardTab.classList.contains("hidden")) return;
+  await refreshLeaderboard();
+};
+
+const refreshLeaderboard = async () => {
+  const data = await apiFetch("/api/leaderboard");
+  leaderboardCache = (data.leaderboard || []).slice();
+  renderLeaderboard();
+};
+
+const renderLeaderboard = () => {
+  if (!leaderboardList) return;
+  leaderboardList.innerHTML = "";
+  if (!leaderboardCache.length) {
+    const empty = document.createElement("div");
+    empty.className = "card";
+    empty.textContent = "No scores yet.";
+    leaderboardList.appendChild(empty);
+    return;
+  }
+  leaderboardCache.forEach((entry, index) => {
+    const row = document.createElement("div");
+    row.className = "leaderboard-row";
+    if (currentUser && entry.username === currentUser.username) {
+      row.classList.add("me");
+    }
+
+    const rank = document.createElement("span");
+    rank.className = "leaderboard-rank";
+    rank.textContent = `#${index + 1}`;
+
+    const name = document.createElement("span");
+    name.className = "leaderboard-name";
+    name.textContent = entry.username;
+
+    const points = document.createElement("span");
+    points.className = "leaderboard-points";
+    points.textContent = `${entry.points} pts`;
+
+    row.appendChild(rank);
+    row.appendChild(name);
+    row.appendChild(points);
+    leaderboardList.appendChild(row);
+  });
 };
 
 const triggerConfettiForWins = (wins) => {
@@ -447,6 +499,9 @@ tabButtons.forEach((button) => {
     button.classList.add("active");
     tabs.forEach((tab) => tab.classList.add("hidden"));
     document.getElementById(button.dataset.tab).classList.remove("hidden");
+    if (button.dataset.tab === "leaderboardTab") {
+      refreshLeaderboard().catch(() => {});
+    }
   });
 });
 
@@ -455,5 +510,6 @@ loadMe();
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && authToken) {
     refreshEvents().catch(() => {});
+    refreshLeaderboardIfVisible().catch(() => {});
   }
 });

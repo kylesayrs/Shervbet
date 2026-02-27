@@ -354,6 +354,59 @@ form {
   gap: 16px;
 }
 
+.leaderboard {
+  display: grid;
+  gap: 12px;
+}
+
+.leaderboard-head {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: 12px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.leaderboard-list {
+  display: grid;
+  gap: 10px;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: 12px;
+  align-items: center;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-soft);
+}
+
+.leaderboard-row.me {
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 14px 28px rgba(59, 130, 246, 0.12);
+}
+
+.leaderboard-rank {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.leaderboard-name {
+  font-weight: 600;
+}
+
+.leaderboard-points {
+  font-weight: 700;
+  text-align: right;
+}
+
 .card {
   background: var(--card);
   border-radius: 16px;
