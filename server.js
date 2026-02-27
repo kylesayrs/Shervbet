@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, "data");
 const PUBLIC_DIR = path.join(__dirname, "public");
 
-const PRICE_INCREMENT = 5;
 const DEFAULT_POINTS = 1000;
 
 const sessions = new Map();
@@ -219,9 +218,16 @@ function getEventPrices(event, bets) {
   const noCount = bets.filter(
     (bet) => bet.event_id === event.id && bet.direction === "no"
   ).length;
+  const baseYes = Number(event.base_yes_price);
+  const baseNo = Number(event.base_no_price);
+  const total = yesCount + noCount;
+  const baseTotal = baseYes + baseNo;
+  const yesRatio = total === 0 ? baseYes / baseTotal : yesCount / total;
+  const noRatio = total === 0 ? baseNo / baseTotal : noCount / total;
+  const clampPrice = (value) => Math.max(1, Math.min(99, value));
   return {
-    yes: Number(event.base_yes_price) + yesCount * PRICE_INCREMENT,
-    no: Number(event.base_no_price) + noCount * PRICE_INCREMENT,
+    yes: clampPrice(Math.round(baseYes * 0.25 + yesRatio * 100 * 0.75)),
+    no: clampPrice(Math.round(baseNo * 0.25 + noRatio * 100 * 0.75)),
   };
 }
 
