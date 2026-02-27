@@ -1,14 +1,15 @@
 :root {
-  --bg: #f5f1e9;
-  --ink: #1c1b18;
-  --accent: #ff7a29;
-  --accent-dark: #cc4b0b;
-  --mint: #b6f3db;
-  --sunset: #ffd7a3;
+  --bg: #f4f6f9;
+  --ink: #0f172a;
+  --accent: #1f8a70;
+  --accent-dark: #0f6b56;
+  --accent-soft: #d6f1ea;
+  --sunset: #eef2f7;
   --card: #ffffff;
-  --muted: #6b655f;
-  --border: #e0d9cd;
-  --shadow: 0 18px 40px rgba(33, 26, 18, 0.18);
+  --muted: #5b6472;
+  --border: #e1e6ee;
+  --shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 * {
@@ -17,9 +18,12 @@
 
 body {
   margin: 0;
-  font-family: "Space Grotesk", sans-serif;
+  font-family: "Manrope", sans-serif;
   color: var(--ink);
-  background: radial-gradient(circle at top left, #fff0db, var(--bg));
+  background:
+    radial-gradient(circle at 10% 10%, rgba(31, 138, 112, 0.12), transparent 45%),
+    radial-gradient(circle at 90% 20%, rgba(15, 107, 86, 0.08), transparent 35%),
+    linear-gradient(135deg, #f8fafc, var(--bg));
   min-height: 100vh;
 }
 
@@ -44,12 +48,23 @@ body {
 
 .login-card {
   background: var(--card);
-  border-radius: 24px;
+  border-radius: 20px;
   padding: 32px;
   width: min(420px, 100%);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  position: relative;
+  overflow: hidden;
   animation: rise 0.6s ease;
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, rgba(31, 138, 112, 0.9), rgba(47, 184, 150, 0.4)) 1;
+  pointer-events: none;
 }
 
 .eyebrow {
@@ -65,7 +80,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: "Syne", sans-serif;
+  font-family: "Sora", sans-serif;
   margin: 0 0 8px;
 }
 
@@ -84,18 +99,27 @@ label {
 
 input,
 textarea {
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
   padding: 12px 14px;
   font-size: 1rem;
   font-family: inherit;
+  background: white;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(31, 138, 112, 0.6);
+  box-shadow: 0 0 0 3px rgba(31, 138, 112, 0.15);
 }
 
 input[type="range"] {
   padding: 0;
   border-radius: 999px;
   height: 6px;
-  background: linear-gradient(90deg, var(--accent), var(--sunset));
+  background: linear-gradient(90deg, var(--accent), #7fd7c0);
   -webkit-appearance: none;
   appearance: none;
 }
@@ -138,15 +162,15 @@ textarea {
 
 button {
   border: none;
-  background: var(--accent);
+  background: linear-gradient(120deg, var(--accent), #2fb896);
   color: white;
   padding: 12px 18px;
-  border-radius: 16px;
+  border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.95rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 12px 24px rgba(255, 122, 41, 0.25);
+  box-shadow: 0 12px 24px rgba(31, 138, 112, 0.25);
 }
 
 button:hover {
@@ -157,12 +181,12 @@ button.ghost {
   background: transparent;
   color: var(--ink);
   box-shadow: none;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(15, 23, 42, 0.12);
 }
 
 .btn-no {
-  background: #e86a9b;
-  box-shadow: 0 12px 24px rgba(232, 106, 155, 0.25);
+  background: linear-gradient(120deg, #e3607a, #c7526a);
+  box-shadow: 0 12px 24px rgba(227, 96, 122, 0.22);
 }
 
 .btn-no:hover {
@@ -196,18 +220,21 @@ form {
 }
 
 .topbar {
-  padding: 20px 24px;
+  padding: 18px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(120deg, var(--mint), #fff);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
 }
 
 .content {
   flex: 1;
   padding: 24px;
-  padding-bottom: 90px;
+  padding-bottom: 100px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .tab-header {
@@ -216,6 +243,8 @@ form {
   align-items: center;
   gap: 16px;
   margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .tab-header p {
@@ -228,22 +257,19 @@ form {
   grid-auto-flow: row;
   grid-template-columns: 1fr;
   gap: 16px;
-  overflow-y: auto;
-  padding-bottom: 16px;
-  scroll-snap-type: y mandatory;
+  padding-bottom: 8px;
 }
 
 .event-card {
   background: var(--card);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 20px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  scroll-snap-align: start;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-soft);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: 320px;
+  min-height: 300px;
   opacity: 1;
 }
 
@@ -267,7 +293,7 @@ form {
 }
 
 .price-card {
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 12px;
   background: var(--sunset);
   font-weight: 600;
@@ -275,10 +301,11 @@ form {
   flex-direction: column;
   gap: 6px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .price-card.no {
-  background: #f3c6e0;
+  background: #f6d7e1;
 }
 
 .price-card:hover {
@@ -297,7 +324,7 @@ form {
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #f0f0f0;
+  background: #edf1f6;
   font-size: 0.75rem;
   font-weight: 600;
 }
@@ -319,10 +346,10 @@ form {
 
 .card {
   background: var(--card);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 18px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-soft);
 }
 
 .points {
@@ -344,9 +371,9 @@ form {
   display: flex;
   justify-content: space-around;
   padding: 12px 16px 20px;
-  background: linear-gradient(0deg, rgba(245, 241, 233, 0.95), rgba(245, 241, 233, 0.6));
-  border-top: 1px solid var(--border);
-  backdrop-filter: blur(8px);
+  background: rgba(248, 250, 252, 0.9);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
   animation: fadeIn 0.8s ease;
 }
 
@@ -362,7 +389,7 @@ form {
 
 .tab-btn.active {
   color: var(--ink);
-  border-color: var(--ink);
+  border-color: rgba(15, 23, 42, 0.12);
   background: white;
 }
 
@@ -379,7 +406,7 @@ form {
 
 .modal-card {
   background: var(--card);
-  border-radius: 20px;
+  border-radius: 18px;
   padding: 24px;
   width: min(480px, 100%);
   box-shadow: var(--shadow);
@@ -439,9 +466,12 @@ form {
 }
 @media (min-width: 900px) {
   .content {
-    padding: 32px 48px 100px;
+    padding: 32px 48px 110px;
   }
   .profile-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .event-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
