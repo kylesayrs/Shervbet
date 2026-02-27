@@ -16,7 +16,6 @@ const passwordError = document.getElementById("passwordError");
 const adminPanel = document.getElementById("adminPanel");
 const adminUserForm = document.getElementById("adminUserForm");
 const adminUserError = document.getElementById("adminUserError");
-const welcomeName = document.getElementById("welcomeName");
 
 let authToken = localStorage.getItem("token");
 let currentUser = null;
@@ -81,7 +80,6 @@ const setError = (el, message) => {
 const loadMe = async () => {
   try {
     currentUser = await apiFetch("/api/me");
-    welcomeName.textContent = `Welcome, ${currentUser.username}`;
     pointsBalance.textContent = currentUser.points;
     adminPanel.classList.toggle("hidden", !currentUser.is_admin);
     showApp();
@@ -154,8 +152,8 @@ const renderEvents = () => {
         </div>
       </div>
       <div class="bets">
-        <div>YES bettors: ${event.bets.yes.join(", ") || "—"}</div>
-        <div>NO bettors: ${event.bets.no.join(", ") || "—"}</div>
+        <div>YES: ${event.bets.yes.join(", ") || "—"}</div>
+        <div>NO: ${event.bets.no.join(", ") || "—"}</div>
       </div>
       <div class="stack" data-event-actions></div>
     `;

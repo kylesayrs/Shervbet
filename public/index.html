@@ -17,8 +17,8 @@
       <section class="login" id="loginView">
         <div class="login-card">
           <p class="eyebrow">Shervbet</p>
-          <h1>Prediction Market</h1>
-          <p class="subtext">Private points-only prediction market</p>
+          <h1>Private Prediction Market</h1>
+          <p class="subtext">Outforcast the competition</p>
           <form id="loginForm">
             <label>
               Username
@@ -31,10 +31,6 @@
             <button type="submit">Log in</button>
             <p class="error" id="loginError"></p>
           </form>
-          <div class="login-hint">
-            <span>Default admin:</span>
-            <span>admin / admin</span>
-          </div>
         </div>
       </section>
 
@@ -42,7 +38,6 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">Shervbet</p>
-            <h2 id="welcomeName">Welcome</h2>
           </div>
           <button class="ghost" id="logoutBtn">Log out</button>
         </header>
@@ -51,10 +46,10 @@
           <section class="tab" id="eventsTab">
             <div class="tab-header">
               <div>
-                <h3>Events</h3>
-                <p>Bet once. Prices rise as the crowd piles in.</p>
+                <h3>Predictions</h3>
+                <p>Past performance always predicts future results</p>
               </div>
-              <button id="addEventBtn">+ New event</button>
+              <button id="addEventBtn">+ New prediction</button>
             </div>
             <div class="event-strip" id="eventsStrip"></div>
           </section>
@@ -118,7 +113,7 @@
 
     <div class="modal hidden" id="eventModal">
       <div class="modal-card">
-        <h4>Post a new event</h4>
+        <h4>Post a new prediction</h4>
         <form id="eventForm" class="stack">
           <label>
             Event description
@@ -132,10 +127,10 @@
                 name="price"
                 min="1"
                 max="99"
-                value="60"
+                value="50"
                 step="1"
               />
-              <span class="range-value" id="priceValue">60 pts</span>
+              <span class="range-value" id="priceValue">50 pts</span>
             </div>
           </label>
           <button type="submit">Create event</button>
