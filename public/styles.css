@@ -75,6 +75,15 @@ body {
   color: var(--accent-dark);
   margin: 0 0 8px;
   font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eyebrow img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 
 h1,

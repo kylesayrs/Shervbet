@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shervbet</title>
+    <link rel="icon" type="image/png" href="assets/icon.png" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,7 +17,10 @@
     <div class="app">
       <section class="login" id="loginView">
         <div class="login-card">
-          <p class="eyebrow">Shervbet</p>
+          <div class="eyebrow">
+            <img src="assets/icon.png" alt="" aria-hidden="true" />
+            <span>Shervbet</span>
+          </div>
           <h1>Private Prediction Market</h1>
           <p class="subtext">Outforcast the competition</p>
           <form id="loginForm">
@@ -37,7 +41,10 @@
       <section class="shell hidden" id="appView">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Shervbet</p>
+            <div class="eyebrow">
+              <img src="assets/icon.png" alt="" aria-hidden="true" />
+              <span>Shervbet</span>
+            </div>
           </div>
           <button class="ghost" id="logoutBtn">Log out</button>
         </header>
