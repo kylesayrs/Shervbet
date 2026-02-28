@@ -464,10 +464,7 @@ function handleApi(req, res) {
           jsonResponse(res, 400, { error: "User missing" });
           return;
         }
-        if (Number(currentUser.points) < price) {
-          jsonResponse(res, 400, { error: "Insufficient points" });
-          return;
-        }
+        // Allow negative balances; no minimum points check for betting.
 
         const bet = {
           id: crypto.randomUUID(),
