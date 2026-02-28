@@ -341,9 +341,31 @@ function handleApi(req, res) {
     const user = requireAuth(req, res);
     if (!user) return;
     const users = readCsv(path.join(DATA_DIR, "users.csv"));
+    const events = readCsv(path.join(DATA_DIR, "events.csv"));
+    const bets = readCsv(path.join(DATA_DIR, "bets.csv"));
+    const unresolvedEventIds = new Set(
+      events.filter((event) => event.status !== "resolved").map((event) => event.id)
+    );
+    const pendingByUser = new Map();
+    for (const bet of bets) {
+      if (!unresolvedEventIds.has(bet.event_id)) continue;
+      const price = Number(bet.price) || 0;
+      pendingByUser.set(bet.username, (pendingByUser.get(bet.username) || 0) + price);
+    }
     const leaderboard = users
-      .map((u) => ({ username: u.username, points: Number(u.points) }))
-      .sort((a, b) => b.points - a.points || a.username.localeCompare(b.username));
+      .map((u) => {
+        const points = Number(u.points);
+        const pending_points = pendingByUser.get(u.username) || 0;
+        return {
+          username: u.username,
+          points,
+          pending_points,
+          display_points: points + pending_points,
+        };
+      })
+      .sort((a, b) =>
+        b.display_points - a.display_points || a.username.localeCompare(b.username)
+      );
     jsonResponse(res, 200, { leaderboard });
     return;
   }

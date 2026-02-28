@@ -260,7 +260,10 @@ const renderLeaderboard = () => {
 
     const points = document.createElement("span");
     points.className = "leaderboard-points";
-    points.textContent = `${entry.points} pts`;
+    const displayPoints = Number.isFinite(entry.display_points)
+      ? entry.display_points
+      : entry.points;
+    points.textContent = `${displayPoints} pts`;
 
     row.appendChild(rank);
     row.appendChild(name);
