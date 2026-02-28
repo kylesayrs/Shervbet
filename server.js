@@ -49,6 +49,7 @@ function ensureDataFiles() {
       "outcome",
       "created_by",
       "created_at",
+      "hide_from_elise",
     ].join(",");
     fs.writeFileSync(eventsPath, `${header}\n`);
   }
@@ -375,8 +376,14 @@ function handleApi(req, res) {
     if (!user) return;
     const events = readCsv(path.join(DATA_DIR, "events.csv"));
     const bets = readCsv(path.join(DATA_DIR, "bets.csv"));
-    const enriched = events.map((event) => enrichEvent(event, bets));
-    const userBets = bets.filter((bet) => bet.username === user.username);
+    // Special case: hide flagged events from elisebyun.
+    const visibleEvents =
+      user.username === "elisebyun"
+        ? events.filter((event) => event.hide_from_elise !== "true")
+        : events;
+    const enriched = visibleEvents.map((event) => enrichEvent(event, bets));
+    const visibleEventIds = new Set(visibleEvents.map((event) => event.id));
+    const userBets = bets.filter((bet) => visibleEventIds.has(bet.event_id));
     jsonResponse(res, 200, { events: enriched, userBets });
     return;
   }
@@ -409,6 +416,7 @@ function handleApi(req, res) {
           outcome: "",
           created_by: user.username,
           created_at: new Date().toISOString(),
+          hide_from_elise: "false",
         };
         const header = [
           "id",
@@ -419,6 +427,7 @@ function handleApi(req, res) {
           "outcome",
           "created_by",
           "created_at",
+          "hide_from_elise",
         ];
         writeCsv(eventsPath, header, [...events, event]);
         jsonResponse(res, 201, { event });
@@ -532,6 +541,7 @@ function handleApi(req, res) {
       "outcome",
       "created_by",
       "created_at",
+      "hide_from_elise",
     ], updated);
     jsonResponse(res, 200, { ok: true });
     return;
@@ -603,6 +613,7 @@ function handleApi(req, res) {
           "outcome",
           "created_by",
           "created_at",
+          "hide_from_elise",
         ], updatedEvents);
 
         jsonResponse(res, 200, { ok: true });
