@@ -383,7 +383,9 @@ function handleApi(req, res) {
         : events;
     const enriched = visibleEvents.map((event) => enrichEvent(event, bets));
     const visibleEventIds = new Set(visibleEvents.map((event) => event.id));
-    const userBets = bets.filter((bet) => visibleEventIds.has(bet.event_id));
+    const userBets = bets.filter(
+      (bet) => visibleEventIds.has(bet.event_id) && bet.username === user.username
+    );
     jsonResponse(res, 200, { events: enriched, userBets });
     return;
   }
