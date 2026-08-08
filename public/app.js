@@ -1,3 +1,4 @@
+const BASE_PATH = "/shervbet"
 const loginView = document.getElementById("loginView");
 const appView = document.getElementById("appView");
 const loginForm = document.getElementById("loginForm");
@@ -58,7 +59,7 @@ const apiFetch = async (path, options = {}) => {
   if (authToken) {
     headers.Authorization = `Bearer ${authToken}`;
   }
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch((BASE_PATH + path), { ...options, headers });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
     throw new Error(payload.error || "Request failed");
