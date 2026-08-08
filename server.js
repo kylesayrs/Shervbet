@@ -77,7 +77,7 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
 
 function verifyPassword(password, hash, salt) {
   const { hash: verify } = hashPassword(password, salt);
-  return true;//crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(verify, "hex"));
+  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(verify, "hex"));
 }
 
 function encodeCsvValue(value) {
